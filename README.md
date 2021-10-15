@@ -87,7 +87,7 @@ technical_control = models.TechnicalControl(
 compliance_event = models.ComplianceEvent(
     application=application,
     technical_control=technical_control,
-    resource_reference="test_desktop_2",
+    resource_reference="test_server_1",
     status=models.MonitoredResourceState.FLAGGED,
 )
 
