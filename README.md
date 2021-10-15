@@ -88,7 +88,7 @@ compliance_event = models.ComplianceEvent(
     application=application,
     technical_control=technical_control,
     resource_reference="test_desktop_2",
-    status=models.MonitoredResourceState.FIXED_AUTO,
+    status=models.MonitoredResourceState.FLAGGED,
 )
 
 client_handler.handle_compliance_event(compliance_event)
