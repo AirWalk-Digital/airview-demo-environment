@@ -1,0 +1,15 @@
+FROM node:14 AS build
+RUN mkdir /app && \
+    cd /app && \
+    git clone https://github.com/AirWalk-Digital/airview-frontend.git  . && \
+    echo "REACT_APP_GITHUB_CLIENT_ID=dummy" >> .env && \
+    echo "REACT_APP_API_HOST=/_api" >> .env && \
+    echo "REACT_APP_AUTH_CLIENT_ID=dummy" >> .env && \
+    echo "REACT_APP_AUTH_SCOPE=dummy" >> .env && \
+    echo "REACT_APP_AUTH_AUTHORITY=/_oauth/default" >> .env && \
+    echo "REACT_APP_AUTH_REDIRECT_URI=http://localhost:5000/signin-callback" >> .env && \
+    npm install && \
+    npm run build && \
+    npm install -g serve
+WORKDIR /app    
+CMD serve -s build -p 80
