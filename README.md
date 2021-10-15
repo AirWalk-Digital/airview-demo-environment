@@ -110,5 +110,5 @@ second_level_application = models.Application(
     environment=models.Environment(abbreviation="DEV", name="Development"),
     parent_id=created_app.id,
 )
-created_app = client_handler.handle_application(top_level_application)
+created_app = client_handler.handle_application(second_level_application)
 ```
