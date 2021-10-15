@@ -8,9 +8,11 @@ This is a docker-compose based deployment of the core AirView components. When e
 #### Nginx
 Provides reverse proxy into application. Routing within nginx is handled via location prefixes. This allows different services within the application stack to be returned on a single host/port, avoiding CORS related issues. The prefix/route mappings are:
 
-/_api/api -> AirView API
-/_api/storage -> Static storage mock service
-/ -> Catch all route serving AirView frontend 
+| Prefix       | Service   |
+|--------------|-----------|
+|/_api/api     | AirView API
+|/_api/storage | Static storage mock service
+|/             | Catch all route serving AirView frontend 
 
 
 ### AirView Frontend
