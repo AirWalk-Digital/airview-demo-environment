@@ -2,7 +2,9 @@
 
 ## Overview
 This is a docker-compose based deployment of the core AirView components. When executed, you will have a self contained stack with the following architecture:
-[](./diagram.png)
+
+
+![](./diagram.png)
 
 ### Components
 #### Nginx
@@ -41,7 +43,7 @@ Provided that you have docker-compose installed locally (https://docs.docker.com
 
 Then, you should be able to browse to http://localhost:5000 and view the frontend.
 
-To access the API, you should be able to make calls to http://localhost/_api/api. e.g. to list all applications - http://localhost:5000/_api/api/applications/
+To access the API, you should be able to make calls to the api from the base url of http://localhost:5000/_api/api - e.g. to list all applications - http://localhost:5000/_api/api/applications/
 
 Documentation based on the OpenApi specification of the api is served at http://localhost:5001
 
