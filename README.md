@@ -2,7 +2,7 @@
 
 ## Overview
 This is a docker-compose based deployment of the core AirView components. When executed, you will have a self contained stack with the following architecture:
-
+[](./diagram.png)
 
 ### Components
 #### Nginx
@@ -16,10 +16,10 @@ Provides reverse proxy into application. Routing within nginx is handled via loc
 
 
 ### AirView Frontend
-The single page application as found in this repo - 
+The single page application as found in this repo - https://github.com/AirWalk-Digital/airview-frontend
 
 ### AirView API
-The main backend api for the application as found in this repo - 
+The main backend api for the application as found in this repo - https://github.com/AirWalk-Digital/airview-api
 Persists data into the PGSQL database service.
 
 ### Storage Mock
