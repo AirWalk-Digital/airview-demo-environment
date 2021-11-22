@@ -80,7 +80,10 @@ application = models.Application(
 )
 # Define a techincal control against which the event has been raised
 technical_control = models.TechnicalControl(
-    name="All servers should be patched", reference="demo_tc_1"
+    name="All servers should be patched",
+    reference="demo_tc_1",
+    quality_model=models.QualityModel.SECURITY,
+    type=models.TechnicalControlType.TASK,
 )
 
 # Send the compliance event
