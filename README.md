@@ -31,6 +31,9 @@ Mock service to allow the application to operate without markdown content as thi
 ### Oauth Mock
 Mock service to allow the frontend SPA to execute it's authentication flow against a mock oauth2 provider
 
+### Exclusion Mock
+Mock service to automatically approve exclusion requests
+
 ### PGSQL
 Postgres backend relational db
 
