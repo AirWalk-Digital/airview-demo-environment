@@ -3,12 +3,16 @@ var app = express();
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-app.get("/applications/listing.json", async (req, res) => {
-  const url = `${process.env.API_URL}/applications`;
+app.get("/*", async (req, res) => {
+  const url = `https://api.github.com/repos/${process.env.GITHUB_ORG}/${
+    process.env.GITHUB_REPO
+  }/contents/${req.url.replace("/applications/", "")}`;
   console.log(url);
-  const resp = await fetch(url);
-  const data = await resp.json();
-  res.send(data);
+  const resp = await fetch(url, {
+    headers: { accept: "application/vnd.github.VERSION.raw" },
+  });
+  const data = await resp.text();
+  res.status(resp.status).send(data);
 });
 
 var server = app.listen(8080, function () {

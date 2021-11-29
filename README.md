@@ -14,6 +14,7 @@ Provides reverse proxy into application. Routing within nginx is handled via loc
 |--------------|-----------|
 |/_api/api     | AirView API
 |/_api/storage | Static storage mock service
+|/_api/gitproxy| Gitproxy service for OAuth token exchange
 |/             | Catch all route serving AirView frontend 
 
 
@@ -26,7 +27,10 @@ The main backend api for the application as found in this repo - https://github.
 Persists data into the PGSQL database service.
 
 ### Storage Mock
-Mock service to allow the application to operate without markdown content as this is not supported currently.
+Mock service to proxy calls to github api main branch as a substitute for local storage
+
+### Github Proxy 
+Handles Github Oauth app token exchange
 
 ### Oauth Mock
 Mock service to allow the frontend SPA to execute it's authentication flow against a mock oauth2 provider
