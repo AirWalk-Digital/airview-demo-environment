@@ -122,3 +122,24 @@ second_level_application = models.Application(
 )
 created_app = client_handler.handle_application(second_level_application)
 ```
+
+## Using Github Functionality
+Github integration can be optionally enabled by setting environment variables prior to build (e.g. using a .env file). When ```USE_GITHUB_STORAGE``` is set to False, then the environment will default to returning empty content with no editor functionality enabled.
+
+If using Github editing, a Github app will need to be created with 'Contents' and 'Pull Request' read/write permissions. The details will need to be configured in the environment, along with the organisation/user and repo details of the target repo. The repo must also be public. 
+
+GITHUB_SIGNING_KEY should be a 256 bit random key. This can easily be generated with the command ```openssl rand -base64 32``` 
+
+If you have altered these variables then you should rebuild the environment with the no-cache build option.
+
+
+```
+USE_GITHUB_STORAGE=True
+GITHUB_CLIENT_SECRET=my-app-secret
+GITHUB_CLIENT_ID=my-app-client-id
+SIGNING_KEY=b19lAEbAqSUbWtsgpAkEucunQVjxD6eQVt7JCx0lZyQ
+GITHUB_ORG=my-github-org-or-user
+GITHUB_REPO=my-repo
+```
+
+

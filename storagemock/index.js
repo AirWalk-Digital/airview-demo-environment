@@ -4,6 +4,16 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 app.get("/*", async (req, res) => {
+  if (process.env.USE_GITHUB_STORAGE !== "True") {
+    if (req.url.endsWith("listing.json")) {
+      const resp = await fetch(`http://api/applications`);
+      const data = await resp.json();
+      res.send(data);
+      return;
+    }
+    res.status(404).send();
+    return;
+  }
   const url = `https://api.github.com/repos/${process.env.GITHUB_ORG}/${
     process.env.GITHUB_REPO
   }/contents/${req.url.replace("/applications/", "")}`;

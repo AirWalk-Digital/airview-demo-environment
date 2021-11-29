@@ -42,6 +42,7 @@ services:
       context: storagemock
       dockerfile: dockerfile
     environment:
+      - USE_GITHUB_STORAGE
       - GITHUB_ORG
       - GITHUB_REPO
 
