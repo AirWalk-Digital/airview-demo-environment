@@ -66,6 +66,7 @@ services:
         - GITHUB_CLIENT_ID
         - GITHUB_ORG
         - GITHUB_REPO
+        - AIRVIEW_HOST
 
   oauth:
     build:
