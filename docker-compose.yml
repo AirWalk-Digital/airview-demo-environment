@@ -18,6 +18,20 @@ services:
       - DB_CONN_STR=postgresql://postgres:postgres@db/postgres
     depends_on:
       - db
+
+  gitproxy:
+    build:
+      context: .
+      dockerfile: dockerfile.gitproxy
+    ports:
+      - "8888:7071"
+    environment:
+      - GITHUB_CLIENT_SECRET
+      - GITHUB_CLIENT_ID
+      - ADO_CLIENT_ID
+      - ADO_CLIENT_SECRET
+      - ADO_CALLBACK_URL
+      - SIGNING_KEY
       
 
   storage:
