@@ -28,6 +28,9 @@ services:
     environment:
       - GITHUB_CLIENT_SECRET
       - GITHUB_CLIENT_ID
+      - ADO_CLIENT_ID
+      - ADO_CLIENT_SECRET
+      - ADO_CALLBACK_URL
       - SIGNING_KEY
       
   exclusion_engine:
