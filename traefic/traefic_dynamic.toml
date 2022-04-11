@@ -1,0 +1,57 @@
+[http]
+  [http.middlewares]
+    [http.middlewares.allowOrigin.headers]
+      [http.middlewares.allowOrigin.headers.customResponseHeaders]
+       access-control-allow-origin = "*"
+  [http.middlewares.jwtValidate.forwardAuth]
+    address = "http://auth:8080/validate"
+  [http.middlewares.stripPrefix.stripPrefix]
+    prefixes = ["/_api/api", "/_api/storage", "/_api/gitproxy"]
+  [http.middlewares.addGitproxyPrefix.addPrefix]
+    prefix = "/api"
+
+  [http.routers]
+     # Define a connection between requests and services
+     [http.routers.to-api]
+      rule = "PathPrefix(`/_api/api`)"
+      middlewares = ["allowOrigin", "jwtValidate", "stripPrefix"]
+      service = "api"
+     [http.routers.to-api.tls]
+      certResolver = "lets-encrypt"
+
+
+     [http.routers.to-storage]
+      rule = "PathPrefix(`/_api/storage`)"
+      middlewares = ["allowOrigin", "jwtValidate", "stripPrefix"]
+      service = "storage"
+     [http.routers.to-storage.tls]
+      certResolver = "lets-encrypt"
+
+     [http.routers.to-gitproxy]
+      rule = "PathPrefix(`/_api/gitproxy`)"
+      middlewares = ["allowOrigin", "stripPrefix", "addGitproxyPrefix"]
+      service = "gitproxy"
+     [http.routers.to-gitproxy.tls]
+      certResolver = "lets-encrypt"
+
+     [http.routers.to-frontend]
+      rule = "PathPrefix(`/`)"
+      middlewares = ["allowOrigin"]
+      service = "frontend"
+     [http.routers.to-frontend.tls]
+      certResolver = "lets-encrypt"
+
+  [http.services]
+    # Define how to reach an existing service on our infrastructure
+    [http.services.api.loadBalancer]
+      [[http.services.api.loadBalancer.servers]]
+        url = "http://api/"
+    [http.services.storage.loadBalancer]
+      [[http.services.storage.loadBalancer.servers]]
+        url = "http://storage:8080/"
+    [http.services.gitproxy.loadBalancer]
+      [[http.services.gitproxy.loadBalancer.servers]]
+        url = "http://gitproxy:7071/api/"
+    [http.services.frontend.loadBalancer]
+      [[http.services.frontend.loadBalancer.servers]]
+        url = "http://frontend/"

@@ -18,7 +18,6 @@ app.get("/*", async (req, res) => {
     process.env.GITHUB_REPO
   }/contents/${req.url.replace("/applications/", "")}`;
   console.log(url);
-  console.log(process.env.GITHUB_TOKEN);
   const resp = await fetch(url, {
     headers: {
       accept: "application/vnd.github.VERSION.raw",

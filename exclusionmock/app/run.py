@@ -3,6 +3,7 @@ import logging
 import os
 from airviewclient import client, models
 import sys
+import psycopg2
 
 base_url = "http://api"
 referencing_type = "cloud_account_id"
@@ -18,11 +19,12 @@ handler.setFormatter(formatter)
 root.addHandler(handler)
 
 
-def get_airview_client(token, system_id):
+def get_airview_client(token, system_name):
 
     client_handler = client.get_handler(
         base_url=base_url,
-        system_id=system_id,
+        system_name=system_name,
+        system_stage=models.SystemStage.BUILD,
         referencing_type=referencing_type,
         token=token,
     )
@@ -36,14 +38,31 @@ def process_items(items, client):
             id=item.id, state=models.ExclusionResourceState.ACTIVE
         )
 
+def get_systems():
+    
+    conn = psycopg2.connect(
+        database='postgres',
+        user='postgres',
+        password='postgres',
+        host='db',
+    )
+    cursor = conn.cursor()
+
+    cursor.execute("select name from system")
+
+    data = cursor.fetchall()
+    conn.close()
+    return [d[0] for d in data]
+
+
 
 def invoke():
     logging.info("Starting Run")
-    systems = range(1, 10)
+    systems = get_systems()
 
-    for system_id in systems:
-        logging.info(f"processing system id {system_id}")
-        client = get_airview_client(None, system_id)
+    for system_name in systems:
+        logging.info(f"processing system id {system_name}")
+        client = get_airview_client(None, system_name)
         items = client.get_exclusions_by_state(models.ExclusionResourceState.PENDING)
         process_items(items, client)
 

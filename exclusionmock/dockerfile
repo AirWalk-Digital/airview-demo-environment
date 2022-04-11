@@ -2,7 +2,7 @@ FROM python:3.8
 
 RUN apt-get update && \
     apt-get install -y cron && \
-    pip install pip install git+http://git@github.com/AirWalk-Digital/airview-api.git@main#subdirectory=app/client && \
+    pip install pip install git+http://git@github.com/AirWalk-Digital/airview-api.git@main#subdirectory=app/client psycopg2 && \
     sed -i "`wc -l < /etc/crontab`i\\* * * * * root python /app/run.py\\" /etc/crontab
 
 ADD app /app

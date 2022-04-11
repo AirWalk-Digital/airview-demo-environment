@@ -4,11 +4,17 @@ ARG GITHUB_CLIENT_ID
 ARG GITHUB_ORG
 ARG GITHUB_REPO
 ARG AIRVIEW_HOST
+ARG AUTH_CLIENT_ID
+ARG AUTH_SCOPE
+ARG AUTH_AUTHORITY
 
 ENV REACT_APP_CONTENT_CLIENT_ID $GITHUB_CLIENT_ID
 ENV REACT_APP_CONTENT_ORGANISATION $GITHUB_ORG
 ENV CONTENT_REPO $GITHUB_REPO
 ENV AIRVIEW_HOST $AIRVIEW_HOST
+ENV AUTH_CLIENT_ID $AUTH_CLIENT_ID
+ENV AUTH_SCOPE $AUTH_SCOPE
+ENV AUTH_AUTHORITY $AUTH_AUTHORITY
 
 RUN if [ -z $REACT_APP_CONTENT_CLIENT_ID ]; then echo 'set dummy' && export REACT_APP_CONTENT_CLIENT_ID=dummy ; fi && \
     if [ -z $AIRVIEW_HOST ]; then echo 'set localhost' && export AIRVIEW_HOST=http://localhost:5000 ; fi && \
@@ -20,9 +26,9 @@ RUN if [ -z $REACT_APP_CONTENT_CLIENT_ID ]; then echo 'set dummy' && export REAC
     echo "REACT_APP_CONTENT_CALLBACK_URL=$AIRVIEW_HOST/github/authorizing" >> .env && \
     echo "REACT_APP_AUTH_REDIRECT_URI=$AIRVIEW_HOST/signin-callback" >> .env && \
     echo "REACT_APP_API_HOST=/_api" >> .env && \
-    echo "REACT_APP_AUTH_CLIENT_ID=dummy" >> .env && \
-    echo "REACT_APP_AUTH_SCOPE=dummy" >> .env && \
-    echo "REACT_APP_AUTH_AUTHORITY=http://localhost:8080/default" >> .env && \
+    echo "REACT_APP_AUTH_CLIENT_ID=$AUTH_CLIENT_ID" >> .env && \
+    echo "REACT_APP_AUTH_SCOPE=$AUTH_SCOPE" >> .env && \
+    echo "REACT_APP_AUTH_AUTHORITY=$AUTH_AUTHORITY" >> .env && \
     npm install && \
     npm run build && \
     npm install -g serve
