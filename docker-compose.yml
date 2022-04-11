@@ -48,6 +48,7 @@ services:
       - USE_GITHUB_STORAGE
       - GITHUB_ORG
       - GITHUB_REPO
+      - GITHUB_TOKEN
 
   nginx:
     image: nginx:1.21
