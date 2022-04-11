@@ -16,4 +16,6 @@
   storage = "shared/acme.json"
   [certificatesResolvers.lets-encrypt.acme.tlsChallenge]
 
+
+[providers.file]
   filename = "traefik_dynamic.toml"
