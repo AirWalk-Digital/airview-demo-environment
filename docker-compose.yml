@@ -85,3 +85,4 @@ services:
       - TOKEN_AUDIENCE
       - TOKEN_ISSUER
       - TOKEN_KEYS_URI
+      - JWT_AUTH_MODE
