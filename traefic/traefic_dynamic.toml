@@ -6,12 +6,20 @@
   [http.middlewares.jwtValidate.forwardAuth]
     address = "http://auth:8080/validate"
   [http.middlewares.stripPrefix.stripPrefix]
-    prefixes = ["/_api/api", "/_api/storage", "/_api/gitproxy"]
+    prefixes = ["/_api/api", "/_api/storage", "/_api/gitproxy","/_api/api/shim"]
   [http.middlewares.addGitproxyPrefix.addPrefix]
     prefix = "/api"
 
   [http.routers]
      # Define a connection between requests and services
+     [http.routers.to-shim]
+      rule = "PathPrefix(`/_api/api/shim`)"
+      middlewares = ["allowOrigin", "jwtValidate", "stripPrefix"]
+      service = "shim"
+     [http.routers.to-shim.tls]
+      certResolver = "lets-encrypt"
+
+
      [http.routers.to-api]
       rule = "PathPrefix(`/_api/api`)"
       middlewares = ["allowOrigin", "jwtValidate", "stripPrefix"]
@@ -46,6 +54,9 @@
     [http.services.api.loadBalancer]
       [[http.services.api.loadBalancer.servers]]
         url = "http://api/"
+    [http.services.shim.loadBalancer]
+      [[http.services.shim.loadBalancer.servers]]
+        url = "http://shim:5001/"
     [http.services.storage.loadBalancer]
       [[http.services.storage.loadBalancer.servers]]
         url = "http://storage:8080/"

@@ -21,6 +21,7 @@ RUN if [ -z $REACT_APP_CONTENT_CLIENT_ID ]; then echo 'set dummy' && export REAC
     mkdir /app && \
     cd /app && \
     git clone https://github.com/AirWalk-Digital/airview-frontend.git  . && \
+    git checkout aws-demo && \
     sed -i 's/AirWalk-Digital\/airview_demo_applications/'"$REACT_APP_CONTENT_ORGANISATION"'\/'"$CONTENT_REPO"'/g' /app/src/site-config.json && \
     echo "REACT_APP_CONTENT_BACKEND=github" >> .env && \
     echo "REACT_APP_CONTENT_CALLBACK_URL=$AIRVIEW_HOST/github/authorizing" >> .env && \

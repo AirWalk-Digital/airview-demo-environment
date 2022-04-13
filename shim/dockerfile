@@ -1,0 +1,5 @@
+FROM python
+ADD . /app
+RUN cd /app && pip install flask git+https://github.com/AirWalk-Digital/airview-api.git@main#subdirectory=app/client
+WORKDIR /app
+CMD python run.py

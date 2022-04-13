@@ -49,6 +49,11 @@ services:
       - GITHUB_ORG
       - GITHUB_REPO
       - GITHUB_TOKEN
+ 
+  shim:
+    build:
+      context: shim
+      dockerfile: dockerfile
    
   frontend:
     build:

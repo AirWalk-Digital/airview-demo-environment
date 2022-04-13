@@ -24,8 +24,12 @@ app.get("/*", async (req, res) => {
       authorization: `token ${process.env.GITHUB_TOKEN}`,
     },
   });
-  const data = await resp.text();
-  res.status(resp.status).send(data);
+  const data = await resp.blob();
+  res.type(data.type);
+  data.arrayBuffer().then((buf) => {
+    res.send(Buffer.from(buf));
+  });
+  // res.status(resp.status).send(data);
 });
 
 var server = app.listen(8080, function () {
