@@ -13,7 +13,7 @@
   [http.routers]
      # Define a connection between requests and services
      [http.routers.to-shim]
-      rule = "PathPrefix(`/_api/api/shim`)"
+      rule = "PathPrefix(`/_api/api/shim/`)"
       middlewares = ["allowOrigin", "jwtValidate", "stripPrefix"]
       service = "shim"
      [http.routers.to-shim.tls]

@@ -3,9 +3,10 @@ from flask import Flask, request
 from pprint import pprint
 from airviewclient import client, models
 import logging
+import psycopg2
 
 app = Flask(__name__)
-@app.route("/shim", methods=["PUT"])
+@app.route("/shim/compliance-events", methods=["PUT"])
 def temp():
     pprint(request.json)
     data = request.json
@@ -19,7 +20,7 @@ def temp():
     )
 
     client_handler = client.get_handler(
-        base_url='https://test.mcuckson.com/_api/api',
+        base_url='http://api',
         system_name='dummy',
         system_stage=models.SystemStage.MONITOR,
         referencing_type=referencing_type,
@@ -58,6 +59,25 @@ def temp():
     client_handler.handle_compliance_event(compliance_event)
 
     return "ok"
+
+@app.route("/shim/exclusions", methods=["DELETE"])
+def delete_exclusions():
+    query = "update monitored_resource set exclusion_id=null, exclusion_state=null, monitoring_state='FIXED_AUTO';"
+    conn = psycopg2.connect(
+        database='postgres',
+        user='postgres',
+        password='postgres',
+        host='db',
+    )
+    cursor = conn.cursor()
+
+    cursor.execute(query)
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return "ok"
+
 
 
 if __name__ == "__main__":
