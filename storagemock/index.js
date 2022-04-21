@@ -1,12 +1,45 @@
 var express = require("express");
 var app = express();
-const fetch = (...args) =>
+
+let map = {};
+
+const rawfetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
+const fetch = async (url) => {
+  const cached = map[url];
+
+  const options = {
+    headers: {
+      accept: "application/vnd.github.VERSION.raw",
+      authorization: `token ${process.env.GITHUB_TOKEN}`,
+    },
+  };
+
+  if (cached) {
+    options.headers["If-None-Match"] = cached.etag;
+  }
+
+  const response = await rawfetch(url, options);
+
+  if (response.status === 304) {
+    return cached;
+  }
+
+  const data = await response.blob();
+  if (response.ok) {
+    const etag = response.headers.get("ETag");
+    if (etag) {
+      map[url] = { status: response.status, data, etag };
+    }
+  }
+  return { status: response.status, data };
+};
 
 app.get("/*", async (req, res) => {
   if (process.env.USE_GITHUB_STORAGE !== "True") {
     if (req.url.endsWith("listing.json")) {
-      const resp = await fetch(`http://api/applications`);
+      const resp = await rawfetch(`http://api/applications`);
       const data = await resp.json();
       res.send(data);
       return;
@@ -17,16 +50,9 @@ app.get("/*", async (req, res) => {
   const url = `https://api.github.com/repos/${process.env.GITHUB_ORG}/${
     process.env.GITHUB_REPO
   }/contents/${req.url.replace("/applications/", "")}`;
-  console.log(url);
-  const resp = await fetch(url, {
-    headers: {
-      accept: "application/vnd.github.VERSION.raw",
-      authorization: `token ${process.env.GITHUB_TOKEN}`,
-    },
-  });
-  const data = await resp.blob();
-  res.type(data.type);
-  data.arrayBuffer().then((buf) => {
+  const resp = await fetch(url);
+  // res.type(resp.data.type);
+  resp.data.arrayBuffer().then((buf) => {
     res.status(resp.status).send(Buffer.from(buf));
   });
   // res.status(resp.status).send(data);

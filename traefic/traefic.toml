@@ -8,8 +8,6 @@
   [entryPoints.websecure]
     address = ":443"
 
-[api]
-  dashboard = true
 
 [certificatesResolvers.lets-encrypt.acme]
   email = "your_email@noreply.com"
