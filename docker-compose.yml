@@ -1,5 +1,5 @@
 version: "3.9"
-   
+
 services:
   db:
     image: postgres
@@ -9,19 +9,21 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+    restart: always
 
   api:
     build:
-      context: .
+      context: dockerfiles
       dockerfile: dockerfile.api
     environment:
       - DB_CONN_STR=postgresql://postgres:postgres@db/postgres
     depends_on:
       - db
+    restart: always
 
   gitproxy:
     build:
-      context: .
+      context: ./dockerfiles
       dockerfile: dockerfile.gitproxy
     ports:
       - "8888:7071"
@@ -32,14 +34,16 @@ services:
       - ADO_CLIENT_SECRET
       - ADO_CALLBACK_URL
       - SIGNING_KEY
-      
+    restart: always
+
   exclusion_engine:
     build:
-      context: exclusionmock 
+      context: exclusionmock
       dockerfile: dockerfile
     depends_on:
       - api
-    
+    restart: always
+
   storage:
     build:
       context: storagemock
@@ -49,15 +53,17 @@ services:
       - GITHUB_ORG
       - GITHUB_REPO
       - GITHUB_TOKEN
- 
+    restart: always
+
   shim:
     build:
       context: shim
       dockerfile: dockerfile
-   
+    restart: always
+
   frontend:
     build:
-      context: .
+      context: ./dockerfiles
       dockerfile: dockerfile.frontend
       args:
         - GITHUB_CLIENT_ID
@@ -67,6 +73,7 @@ services:
         - AUTH_SCOPE
         - AUTH_CLIENT_ID
         - AUTH_AUTHORITY
+    restart: always
 
   traefik:
     restart: always
@@ -80,6 +87,7 @@ services:
       - "443:443"
     depends_on:
       - auth
+    restart: always
 
   auth:
     restart: always
@@ -91,3 +99,4 @@ services:
       - TOKEN_ISSUER
       - TOKEN_KEYS_URI
       - JWT_AUTH_MODE
+    restart: always

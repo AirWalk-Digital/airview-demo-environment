@@ -27,7 +27,7 @@ app.get("/*", async (req, res) => {
   const data = await resp.blob();
   res.type(data.type);
   data.arrayBuffer().then((buf) => {
-    res.send(Buffer.from(buf));
+    res.status(resp.status).send(Buffer.from(buf));
   });
   // res.status(resp.status).send(data);
 });
