@@ -18,20 +18,34 @@ services:
       - DB_CONN_STR=postgresql://postgres:postgres@db/postgres
     depends_on:
       - db
-
-  gitproxy:
+      
+  cms-api:
     build:
-      context: .
-      dockerfile: dockerfile.gitproxy
-    ports:
-      - "8888:7071"
+      context: cms-api
     environment:
-      - GITHUB_CLIENT_SECRET
-      - GITHUB_CLIENT_ID
-      - ADO_CLIENT_ID
-      - ADO_CLIENT_SECRET
-      - ADO_CALLBACK_URL
-      - SIGNING_KEY
+      - GITHUB_REPO_NAME
+      - GITHUB_ORG_NAME
+      - GITHUB_INSTALLATION_ID
+      - GITHUB_APP_ID
+      - GITHUB_PRIVATE_KEY_FILE
+    volumes:
+      - ./github-app-private-key.pem:/private-key.pem
+    depends_on:
+      - db
+
+  # gitproxy:
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfile.gitproxy
+  #   ports:
+  #     - "8888:7071"
+  #   environment:
+  #     - GITHUB_CLIENT_SECRET
+  #     - GITHUB_CLIENT_ID
+  #     - ADO_CLIENT_ID
+  #     - ADO_CLIENT_SECRET
+  #     - ADO_CALLBACK_URL
+  #     - SIGNING_KEY
       
   exclusion_engine:
     build:
@@ -40,15 +54,15 @@ services:
     depends_on:
       - api
     
-  storage:
-    build:
-      context: storagemock
-      dockerfile: dockerfile
-    environment:
-      - USE_GITHUB_STORAGE
-      - GITHUB_ORG
-      - GITHUB_REPO
-      - GITHUB_TOKEN
+  # storage:
+  #   build:
+  #     context: storagemock
+  #     dockerfile: dockerfile
+  #   environment:
+  #     - USE_GITHUB_STORAGE
+  #     - GITHUB_ORG
+  #     - GITHUB_REPO
+  #     - GITHUB_TOKEN
 
   nginx:
     image: nginx:1.21
@@ -58,26 +72,25 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - api
-      - frontend
-      - oauth
-      - gitproxy
+      - cms-api
+      # - frontend
     
-  frontend:
-    build:
-      context: .
-      dockerfile: dockerfile.frontend
-      args:
-        - GITHUB_CLIENT_ID
-        - GITHUB_ORG
-        - GITHUB_REPO
-        - AIRVIEW_HOST
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfile.frontend
+  #     args:
+  #       - GITHUB_CLIENT_ID
+  #       - GITHUB_ORG
+  #       - GITHUB_REPO
+  #       - AIRVIEW_HOST
 
-  oauth:
-    build:
-      context: oauthmock
-      dockerfile: dockerfile
-    ports:
-      - "8080:8080"
+  # oauth:
+  #   build:
+  #     context: oauthmock
+  #     dockerfile: dockerfile
+  #   ports:
+  #     - "8080:8080"
 
   swagger:
     image: swaggerapi/swagger-ui
