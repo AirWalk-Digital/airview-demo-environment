@@ -32,18 +32,75 @@ const backend = new CmsBackend(client, cache);
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 
 const port = process.env.PORT || 3000;
+
+app.get(
+  "/api/search/:sha",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send([
+        {
+          id: "application/app1",
+          collection: "application",
+          title: "app foo",
+          branchShas: ["39c915901c6d409c24fcf9410d84519b7c1ebb97"],
+          content: "---\ntitle: app foo\n---\n\n",
+        },
+        {
+          id: "disciplines/zen_l6um3ggf",
+          collection: "disciplines",
+          title: "Zen",
+          branchShas: ["39c915901c6d409c24fcf9410d84519b7c1ebb97"],
+          content:
+            "---\ntitle: Zen\n---\n\n# Hello to you!\n\nblah blah, yeah yeah, so what\n\nfoo\n",
+        },
+        {
+          id: "knowledge/foo_l6umbotj",
+          collection: "knowledge",
+          title: "foo",
+          branchShas: ["39c915901c6d409c24fcf9410d84519b7c1ebb97"],
+          content:
+            "---\nsolution: null\npattern: null\nproduct: null\ntitle: foo\n---\n\n",
+        },
+      ]);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 app.get(
   "/api/content/:sha",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-      const data = await backend.getContent(req.params.sha);
+      if (typeof req.query.path !== "string") {
+        res.status(400).send();
+        return;
+      }
+      const data = await backend.getTreeContent(req.params.sha, req.query.path);
       res.send(data);
     } catch (err) {
+      res.status(404).send();
+    }
+  }
+);
+
+app.get(
+  "/api/media/:sha",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (typeof req.query.path !== "string") {
+        res.status(400).send();
+        return;
+      }
+      const data = await backend.getTreeContent(req.params.sha, req.query.path);
+      const buffer = Buffer.from(data.content, "base64");
+      res.write(buffer, "binary");
+      res.end(undefined, "binary");
+    } catch (err) {
+      res.status(404).send();
       next(err);
     }
   }
